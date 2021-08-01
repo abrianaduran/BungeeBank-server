@@ -4,9 +4,10 @@ const morgan = require('morgan')
 const cors = require('cors') 
 const helmet = require('helmet') 
 const { NODE_ENV } =require('./config')
-const cors = require('cors')
 const {CLIENT_ORIGIN} = require('./config')
 const app = express() 
+const budgetsRouter = require('./budgets/budgets-router')
+const expensesRouter = require('./expenses/expenses-router')
 
 const morganOption = (NODE_ENV === 'production') 
     ? 'tiny' 
@@ -18,6 +19,9 @@ app.use(
     cors({
         origin: CLIENT_ORIGIN
     }))  
+
+app.use('/api/budgets', budgetsRouter)
+app.use('/api/expenses', expensesRouter)
 
 app.use('/login', (req, res) => {
     res.send({
