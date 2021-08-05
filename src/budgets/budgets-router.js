@@ -20,8 +20,8 @@ budgetsRouter
         const { id, name, date, initbalance } = req.body
         const newBudget = { name, initbalance }
 
-        for(const [key, value] of Object.entries(newBudget)) {
-            if(value == null) {
+        for (const [key, value] of Object.entries(newBudget)) {
+            if (value == null) {
                 return res.status(400).json({
                     error: { message: `Missing '${key}' in request body` }
                 })
@@ -33,75 +33,74 @@ budgetsRouter
             req.app.get('db'),
             newBudget
         )
-        .then(budget => {
-            res 
-                .status(201)
-                .location(path.posix.join(req.originalUrl, `/${budget.id}`))
-                .json(budget)
-        })
-        .catch(next)
+            .then(budget => {
+                res
+                    .status(201)
+                    .location(path.posix.join(req.originalUrl, `/${budget.id}`))
+                    .json(budget)
+            })
+            .catch(next)
     })
 
-    budgetsRouter 
-        .route('/:budgetId')
-        .all((req, res, next) => {
-            BudgetsService.getById(
-                req.app.get('db'),
-                req.params.budgetId
-            )
+budgetsRouter
+    .route('/:budgetId')
+    .all((req, res, next) => {
+        BudgetsService.getById(
+            req.app.get('db'),
+            req.params.budgetId
+        )
             .then(budget => {
                 if (!budget) {
                     return res.status(404).json({
-                        error: { message: `Budget doesn't exist`}
+                        error: { message: `Budget doesn't exist` }
                     })
                 }
                 res.budget = budget
                 next()
             })
             .catch(next)
+    })
+    .get((req, res, next) => {
+        res.json({
+            id: res.budget.id,
+            name: xss(res.budget.name),
+            date: res.budget.date,
+            initbalance: xss(res.budget.initbalance),
         })
-        .get((req, res, next) => {
-            res.json({
-                id: res.budget.id,
-                name: xss(res.budget.name),
-                date: res.budget.date,
-                initbalance: xss(res.budget.initbalance),
-            })
-        })
-        .delete((req, res, next) => {
-            BudgetsService.deleteBudget(
-                req.app.get('db'),
-                req.params.budgetId
-            )
+    })
+    .delete((req, res, next) => {
+        BudgetsService.deleteBudget(
+            req.app.get('db'),
+            req.params.budgetId
+        )
             .then(() => {
                 res.status(204).end()
             })
             .catch(next)
-        })
-        .patch(jsonParser, (req, res, next) => {
-            const { name, initbalance } = req.body
-            const budgetToUpdate = { name, initbalance }
-            const numberOfValues = Object.values(budgetToUpdate).filter(Boolean).length
-            if (numberOfValues === 0) {
-                return res.status(400).json({
-                    error: {
-                        message: `Request body must contain either 'name', 'initbalance'`
-                    }
-                })
-            }
-            BudgetsService.updateBudget(
-                req.app.get('db'),
-                req.params.budgetId,
-                budgetToUpdate
-            )
+    })
+    .patch(jsonParser, (req, res, next) => {
+        const { name, initbalance } = req.body
+        const budgetToUpdate = { name, initbalance }
+        const numberOfValues = Object.values(budgetToUpdate).filter(Boolean).length
+        if (numberOfValues === 0) {
+            return res.status(400).json({
+                error: {
+                    message: `Request body must contain either 'name', 'initbalance'`
+                }
+            })
+        }
+        BudgetsService.updateBudget(
+            req.app.get('db'),
+            req.params.budgetId,
+            budgetToUpdate
+        )
             .then(numRowsAffected => {
                 res.status(204).end()
             })
             .catch(next)
-        })
+    })
 
-        BudgetsRouter
-        .route('/budgets/edit/:budgetId')
-        .
+budgetsRouter
+    .route('/budgets/edit/:budgetId')
 
-        module.exports = budgetsRouter
+    module.exports = budgetsRouter

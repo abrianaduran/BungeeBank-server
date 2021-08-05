@@ -1,0 +1,6 @@
+ALTER TABLE expenses DROP COLUMN IF EXISTS category;
+ALTER TABLE expenses DROP COLUMN IF EXISTS budget_id;
+
+DROP TABLE IF EXISTS expenses;
+
+DROP TABLE IF EXISTS budgets;

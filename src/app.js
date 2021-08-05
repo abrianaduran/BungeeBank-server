@@ -29,8 +29,8 @@ app.use('/login', (req, res) => {
     })
 })
 
-app.get('/', (req,res) => {
-    res.send('Hello, world!')
+app.get('/api/*', (req,res) => {
+    res.json({ok: true})
 })
 
 app.use(function errorHandler(error, req, res, next) {

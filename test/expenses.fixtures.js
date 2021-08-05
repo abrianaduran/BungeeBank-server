@@ -91,4 +91,4 @@ function makeExpensesArray() {
         
     ]
 }
-
+ module.exports = makeExpensesArray

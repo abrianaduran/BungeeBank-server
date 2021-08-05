@@ -20,3 +20,4 @@ function makeBudgetsArray() {
         }
       ]
 }
+module.exports = makeBudgetsArray

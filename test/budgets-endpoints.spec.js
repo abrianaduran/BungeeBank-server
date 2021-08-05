@@ -1,9 +1,9 @@
 const knex = require('knex')
 const supertest = require('supertest')
 const app = require('../src/app')
-const { makeBudgetsArray } = require('./budgets.fixtures')
-const { makeExpensesArray } = require('./expenses.fixtures')
-const expensesRouter = require('../src/expenses/expenses-router')
+const makeBudgetsArray = require('./budgets.fixtures')
+const makeExpensesArray = require('./expenses.fixtures')
+// const expensesRouter = require('../src/expenses/expenses-router')
 
 describe('Budgets Endpoints', function() {
     let db 
@@ -19,7 +19,7 @@ describe('Budgets Endpoints', function() {
 
     before('clean the table', () => db.raw('TRUNCATE budgets, expenses RESTART IDENTITY CASCADE'))
 
-    this.afterEach('cleanup', () => db.raw('TRUNCATE budgets, expenses RESTART IDENTITY CASCADE'))
+    afterEach('cleanup',() => db.raw('TRUNCATE budgets, expenses RESTART IDENTITY CASCADE'))
 
     describe(`GET /api/budgets`, () => {
         context(`Given no articles`, () => {
@@ -52,7 +52,7 @@ describe('Budgets Endpoints', function() {
             })
         })
     })
-})
+
 
 describe(`GET /api/budgets/:budgetId`, () => {
     context(`Given no budgets`, () => {
@@ -189,4 +189,5 @@ describe(`GET /api/budgets/:budgetId`, () => {
             })
         })
     })
+})
 })
