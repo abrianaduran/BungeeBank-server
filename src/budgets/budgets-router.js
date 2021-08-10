@@ -17,29 +17,29 @@ budgetsRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const { id, name, date, initbalance } = req.body
-        const newBudget = { name, initbalance }
+        const { id, budget_name, date_created, initial_balance } = req.body
+        const newBudget = { budget_name, initial_balance }
 
-        for (const [key, value] of Object.entries(newBudget)) {
-            if (value == null) {
+        for(const [key, value] of Object.entries(newBudget))
+            if(value == null)
                 return res.status(400).json({
                     error: { message: `Missing '${key}' in request body` }
                 })
-            }
-        }
-        newBudget.date = date
-        newBudget.id = id
-        BudgetsService.insertBudget(
-            req.app.get('db'),
-            newBudget
-        )
-            .then(budget => {
-                res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl, `/${budget.id}`))
-                    .json(budget)
-            })
-            .catch(next)
+
+                newBudget.date_created = date_created
+                newBudget.id = id
+
+                BudgetsService.insertBudget(
+                    req.app.get('db'),
+                    newBudget
+                )
+                .then(budget => {
+                    res
+                        .status(201)
+                        .location(path.posix.join(req.originalUrl, `/${budget.id}`))
+                        .json(budget)
+                })
+                .catch(next)
     })
 
 budgetsRouter
@@ -63,9 +63,9 @@ budgetsRouter
     .get((req, res, next) => {
         res.json({
             id: res.budget.id,
-            name: xss(res.budget.name),
-            date: res.budget.date,
-            initbalance: xss(res.budget.initbalance),
+            budget_name: xss(res.budget.budget_name),
+            date_created: res.budget.date_created,
+            initial_balance: xss(res.budget.initial_balance),
         })
     })
     .delete((req, res, next) => {
@@ -79,13 +79,13 @@ budgetsRouter
             .catch(next)
     })
     .patch(jsonParser, (req, res, next) => {
-        const { name, initbalance } = req.body
-        const budgetToUpdate = { name, initbalance }
+        const { budget_name, initial_balance } = req.body
+        const budgetToUpdate = { budget_name, initial_balance }
         const numberOfValues = Object.values(budgetToUpdate).filter(Boolean).length
         if (numberOfValues === 0) {
             return res.status(400).json({
                 error: {
-                    message: `Request body must contain either 'name', 'initbalance'`
+                    message: `Request body must contain either 'budget_name', 'initial_balance'`
                 }
             })
         }
@@ -99,8 +99,5 @@ budgetsRouter
             })
             .catch(next)
     })
-
-budgetsRouter
-    .route('/budgets/edit/:budgetId')
 
     module.exports = budgetsRouter

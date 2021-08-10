@@ -8,11 +8,11 @@ const jsonParser = express.json()
 
 const serializeExpense = expense => ({
     id: expense.id,
-    name: xss(expense.name),
+    expense_name: xss(expense.expense_name),
     amount: xss(expense.amount),
-    date: expense.date,
-    budgetId: expenses.budgetId,
-    category: expenses.category,
+    date_created: expense.date_created,
+    budget_id: expense.budget_id,
+    expense_category: expense.expense_category,
 })
 expensesRouter
     .route('/')
@@ -25,8 +25,8 @@ expensesRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const { id, name, amount, date, budgetId, category } = req.body
-        const newExpense = { id, name, amount, budgetId, category }
+        const { id, expense_name, amount, date_created, budget_id, expense_category } = req.body
+        const newExpense = { id, expense_name, amount, budget_id, expense_category }
 
         for(const [key, value] of Object.entries(newExpense))
             if(value == null)
@@ -34,7 +34,7 @@ expensesRouter
                     error: { message: `Missing '${key}' in request body` }
                 })
 
-                newExpense.date = date
+                newExpense.date_created = date_created
 
                 ExpensesService.insertExpense(
                     req.app.get('db'),
@@ -81,13 +81,13 @@ expensesRouter
             .catch(next)
         })
         .patch(jsonParser, (req, res, next) => {
-            const { name, amount, category } = req.body
-            const expenseToUpdate = { name, amount, category }
+            const { expense_name, amount, expense_category } = req.body
+            const expenseToUpdate = { expense_name, amount, expense_category }
 
             const numberOfValues = Object.values(expenseToUpdate).filter(Boolean).length
             if (numberOfValues === 0)
                 return res.status(400).json({
-                    error: { message: `Request body must contain either 'name', 'amount', 'category'` }
+                    error: { message: `Request body must contain either 'expense_name', 'amount', 'expense_category'` }
                 })
                 ExpensesService.updateExpense(
                     req.app.get('db'),

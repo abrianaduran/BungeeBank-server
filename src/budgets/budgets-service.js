@@ -19,7 +19,7 @@ const BudgetsService = {
             .where({ id })
             .delete()
     },
-    updateBudgets(knex, id, newBudgetFields) {
+    updateBudget(knex, id, newBudgetFields) {
         return knex('budgets')
             .where({ id })
             .update(newBudgetFields)
